@@ -54,7 +54,9 @@ const createUser = async (req, res) => {
     const saltRounds = 10;
     bcrypt.hash(password, saltRounds, async (err, hash) => {
       // Store hash in your password DB.
-      console.log("err in pasword hashing", err);
+      if (err) {
+        console.log("err in pasword hashing", err);
+      }
       await Users.create({
         name: name,
         email: email,
@@ -185,7 +187,7 @@ const resetPassword = async (req, res) => {
     }
 
     res.sendFile(
-      "http://localhost:4000/src/pages/resetpassword.js"
+      "http://localhost:4000/src/pages/resetpassword.jsx"
     );
   } catch (error) {
     console.log(error);

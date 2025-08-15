@@ -1,18 +1,20 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import NavBar from "./components/NavBar";
+import "./App.css";
+import HomePage from "./pages/HomePage";
+import { Route, Routes } from "react-router-dom";
+import SignupPage from "./pages/SignupPage";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <h3 className='text-3xl underline bg-red-400'>hello world</h3>
-      </div>
-    </>
-  )
+    <div>
+      <NavBar />
+      <Routes>
+        <Route path="/" element={<HomePage />}></Route>
+        <Route path="/signup" element={<SignupPage  />}></Route>
+      </Routes>
+    </div>
+  );
 }
 
-export default App
+export default App;

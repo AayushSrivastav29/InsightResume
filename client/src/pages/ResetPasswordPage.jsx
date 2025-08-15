@@ -1,17 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
+import { UserContext } from "../UserContext";
+import { useNavigate } from "react-router-dom";
 
-const ResetPassword = () => {
+const ResetPasswordPage = () => {
+  const { path } = useContext(UserContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState({ text: "", type: "" });
-
+  const navigate = useNavigate();
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage({ text: "", type: "" });
 
     try {
-      await axios.patch("http://localhost:3000/api/user/updatepassword", {
+      await axios.patch(`${path}/api/user/updatepassword`, {
         email,
         password,
       });
@@ -19,7 +23,7 @@ const ResetPassword = () => {
       setMessage({ text: "Password updated successfully!", type: "success" });
 
       setTimeout(() => {
-        window.location.href = "/home"; // Adjust route if using React Router
+        navigate('/signup'); // Adjust route if using React Router
       }, 3000);
     } catch (error) {
       setMessage({
@@ -66,8 +70,7 @@ const ResetPassword = () => {
             marginTop: "15px",
             padding: "10px",
             borderRadius: "4px",
-            backgroundColor:
-              message.type === "success" ? "#d4edda" : "#f8d7da",
+            backgroundColor: message.type === "success" ? "#d4edda" : "#f8d7da",
             color: message.type === "success" ? "#155724" : "#721c24",
           }}
         >
@@ -78,4 +81,4 @@ const ResetPassword = () => {
   );
 };
 
-export default ResetPassword;
+export default ResetPasswordPage;
