@@ -14,6 +14,23 @@ const resumeSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  filePath: {
+    type: String,
+    required: true,
+  },
+  fileSize: {
+    type: Number,
+    required: true,
+  },
+  mimeType: {
+    type: String,
+    required: true,
+    enum: [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ],
+  },
   extractedData: {
     skills: {
       type: [String],
@@ -31,9 +48,28 @@ const resumeSchema = new mongoose.Schema({
       type: [String],
       default: [],
     },
+    summary:{
+      type: [String],
+      default: [],
+    },
     contactInfo: {
-      type: Object,
-      default: {},
+      email: {
+        type: String,
+        trim: true,
+        lowercase: true,
+      },
+      phone: {
+        type: String,
+        trim: true,
+      },
+      name: {
+        type: String,
+        trim: true,
+      },
+      address: {
+        type: String,
+        trim: true,
+      },
     },
   },
   uploadedAt: {
