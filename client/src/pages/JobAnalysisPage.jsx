@@ -37,8 +37,10 @@ export default function JobAnalysisPage() {
         headers: { Authorization: `${token}` },
       });
       setResumes(response.data.resumes || []);
+      console.log('response.data.resumes :>> ', response.data.resumes);
       if (response.data.resumes && response.data.resumes.length > 0) {
-        setSelectedResume(response.data.resumes[0]._id);
+        setSelectedResume(response.data.resumes[0]);
+        console.log('response.data.resumes[0] :>> ', response.data.resumes[0]);
       }
     } catch (error) {
       console.error("Error fetching resumes:", error);
@@ -50,7 +52,7 @@ export default function JobAnalysisPage() {
       e.preventDefault();
       e.stopPropagation();
     }
-    if (!selectedResume || !jobTitle.trim()) {
+    if (!selectedResume) {
       setError("Please select a resume and enter a job title");
       return;
     }
@@ -63,7 +65,7 @@ export default function JobAnalysisPage() {
       const response = await axios.post(
         `${path}/api/analyse/analyze`,
         {
-          resumeId: selectedResume,
+          resumeId: selectedResume.id,
           jobTitle: jobTitle.trim(),
           jobDescription: jobDescription.trim(),
         },
@@ -133,6 +135,7 @@ export default function JobAnalysisPage() {
                     ) : (
                       <div className="space-y-3">
                         {resumes.map((resume) => (
+                          console.log('resume :>> ', resume),
                           <div
                             key={resume._id}
                             className={`p-4 border rounded-lg cursor-pointer transition-all ${
@@ -140,7 +143,9 @@ export default function JobAnalysisPage() {
                                 ? "border-blue-500 bg-blue-50"
                                 : "border-gray-200 hover:border-gray-300"
                             }`}
-                            onClick={() => setSelectedResume(resume._id)}
+                            onClick={() => {
+                              console.log('clicked resume :>> ');
+                              setSelectedResume(resume.id)}}
                           >
                             <div className="flex items-center">
                               <FileText className="w-5 h-5 text-gray-600 mr-3" />
@@ -227,7 +232,7 @@ export default function JobAnalysisPage() {
                   {/* Analyze Button */}
                   <form onSubmit={(e)=>handleAnalyze(e)}>
                   <button
-                    disabled={analyzing || !selectedResume || !jobTitle.trim()}
+                    disabled={analyzing || !selectedResume}
                     className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-400 text-white py-4 px-6 rounded-lg font-semibold text-lg transition-all duration-200 transform hover:scale-105 shadow-lg flex items-center justify-center"
                   >
                     {analyzing ? (
@@ -461,9 +466,6 @@ export default function JobAnalysisPage() {
 
               {/* Action Buttons */}
               <div className="flex justify-center space-x-4">
-                <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
-                  Download Report
-                </button>
                 <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
                   Save Analysis
                 </button>

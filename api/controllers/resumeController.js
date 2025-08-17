@@ -501,7 +501,7 @@ const getUserResumes = async (req, res) => {
     // Get resumes with pagination
     const resumes = await Resume.find({ userId: req.user.id })
       .select("-originalText -filePath") // Exclude large text field and file path for security
-      .sort({ createdAt: -1 })
+      .sort({ uploadedAt: -1 })
       .skip(skip)
       .limit(limit);
 
@@ -512,7 +512,7 @@ const getUserResumes = async (req, res) => {
         filename: resume.filename,
         fileSize: resume.fileSize,
         mimeType: resume.mimeType,
-        uploadedAt: resume.createdAt,
+        uploadedAt: resume.uploadedAt,
         extractedData: resume.extractedData,
       })),
       pagination: {

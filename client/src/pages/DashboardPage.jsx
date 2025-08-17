@@ -49,23 +49,23 @@ export default function DashboardPage() {
       const analysesResponse = await axios.get(`${path}/api/analyse/recent`, {
         headers: { Authorization: `${token}` }
       });
-      
+      console.log('analysesResponse.data :>> ', analysesResponse.data);
       setResumes(resumesResponse.data.resumes || []);
-      setAnalyses(analysesResponse.data.analyses || []);
+      setAnalyses(analysesResponse.data || []);
       
       // Calculate stats
       const totalResumes = resumesResponse.data.resumes?.length || 0;
-      const totalAnalyses = analysesResponse.data.analyses?.length || 0;
-      const averageScore = analysesResponse.data.analyses?.length > 0 
-        ? analysesResponse.data.analyses.reduce((acc, analysis) => 
-            acc + (analysis.analysis?.matchPercentage || 0), 0) / analysesResponse.data.analyses.length
+      const totalAnalyses = analysesResponse.data?.length || 0;
+      const averageScore = analysesResponse.data?.length > 0 
+        ? analysesResponse.data.reduce((acc, analysis) => 
+            acc + (analysis.analysis?.matchPercentage || 0), 0) / analysesResponse.data.length
         : 0;
       
       setStats({
         totalResumes,
         totalAnalyses,
         averageScore: Math.round(averageScore),
-        lastAnalysis: analysesResponse.data.analyses?.[0] || null
+        lastAnalysis: analysesResponse.data?.[0] || null
       });
       
     } catch (error) {
@@ -208,6 +208,7 @@ export default function DashboardPage() {
               ) : (
                 <div className="space-y-4">
                   {resumes.slice(0, 3).map((resume) => (
+                    console.log('resume :>> ', resume),
                     <div key={resume._id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                       <div className="flex items-center">
                         <div className="p-2 bg-blue-100 rounded-lg mr-4">
