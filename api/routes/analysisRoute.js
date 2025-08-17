@@ -6,6 +6,7 @@ const router = express.Router();
 
 
 router.post('/analyze', auth, analysisController.analyseResume);
+router.get('/recent', auth, analysisController.userAllResumeAnalysis);
 router.get('/:resumeId', auth, analysisController.getAnalysisHistory);
 router.get('/detail/:analysisId', auth, analysisController.getAnalysisHistoryById);
 router.delete('/:analysisId', auth,analysisController.deleteAnalysis);

@@ -9,6 +9,6 @@ const router = express.Router();
 router.get("/", auth, resumeController.getUserResumes);
 router.get("/:id", auth, resumeController.getResumeByID);
 router.post("/upload",auth,upload.single("resume"),resumeController.uploadAndParseResume);
-router.delete("/:id", auth, resumeController.deleteResume);
+router.delete("/delete/:id", auth, resumeController.deleteResume);
 router.put("/:id/update-extracted-data", auth,resumeController.updateExtractedData);
 module.exports = router;

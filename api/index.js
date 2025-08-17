@@ -14,9 +14,11 @@ app.use(express.json());
 //import routes
 const userRoute = require('./routes/userRoute');
 const resumeRoute = require('./routes/resumeRoute');
+const analysisRoute = require('./routes/analysisRoute');
 
 app.use('/api/user', userRoute);
 app.use('/api/resume', resumeRoute);
+app.use('/api/analyse', analysisRoute);
 
 
 const PORT=process.env.PORT;

@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import {
   Eye,
   EyeOff,
@@ -12,12 +13,14 @@ import {
 import { UserContext } from "../UserContext";
 
 export default function SignupPage() {
-  const { path } = useContext(UserContext);
+  const { path, login } = useContext(UserContext);
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [email, setEmail] = useState("");
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -66,7 +69,7 @@ export default function SignupPage() {
     if (!formData.password.trim()) {
       newErrors.password = "Password is required";
     } else if (formData.password.length < 5) {
-      newErrors.password = "Password must be at least 8 characters";
+      newErrors.password = "Password must be at least 5 characters";
     }
 
     setErrors(newErrors);
@@ -75,32 +78,37 @@ export default function SignupPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      // Handle form submission
-      const user = {
-        name: formData.firstName + " " + formData.lastName,
-        email: formData.email,
-        password: formData.password,
-      };
-      try {
-        let response;
-        if (isLogin) {
-          response = await axios.post(`${path}/api/user/find`, {
-            email: user.email,
-            password: user.password,
-          });
-          console.log(response);
-        } else {
-          response = await axios.post(`${path}/api/user/create`, user);
-          console.log(response);
-        }
-        localStorage.setItem("token", response.data.token);
-        alert(isLogin ? "Login successful!" : "Account created successfully!");
-        setTimeout(() => {}, 0);
-      } catch (error) {
-        alert(error.message);
-        console.log("error :>> ", error);
+    if (!validateForm()) return;
+
+    setLoading(true);
+    
+    try {
+      let response;
+      if (isLogin) {
+        response = await axios.post(`${path}/api/user/find`, {
+          email: formData.email,
+          password: formData.password,
+        });
+      } else {
+        const user = {
+          name: formData.firstName + " " + formData.lastName,
+          email: formData.email,
+          password: formData.password,
+        };
+        response = await axios.post(`${path}/api/user/create`, user);
       }
+      
+      // Handle successful authentication
+      login(response.data.token, response.data.user);
+      navigate('/dashboard');
+      
+    } catch (error) {
+      console.error('Authentication error:', error);
+      const errorMessage = error.response?.data?.message || 
+        (isLogin ? 'Login failed' : 'Registration failed');
+      setErrors({ submit: errorMessage });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -125,20 +133,15 @@ export default function SignupPage() {
       return;
     }
     try {
-      const response = await axios.post(
-        `${path}/api/user/forgotpassword`,
-        {email}
-      );
+      await axios.post(`${path}/api/user/forgotpassword`, { email });
       alert("A reset password link has been sent to your email ID");
+      setShowModal(false);
+      setEmail("");
     } catch (error) {
-      console.log("error :>> ", error);
-      alert(error.message);
+      console.error('Password reset error:', error);
+      alert(error.response?.data?.message || "Failed to send reset link");
     }
-    console.log("Reset link sent to:", email);
-    setShowModal(false); // close modal
-    setEmail(""); // clear field
   };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center p-4">
       {/* Background decoration */}

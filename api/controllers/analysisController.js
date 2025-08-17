@@ -23,22 +23,25 @@ const parseJobRequirements = async(jobText) => {
   try {
     const response = await geminiAI.models.generateContent({
       model: "gemini-2.5-flash",
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are a job description parser. Extract structured JSON only with keys: skills (array), experience (array), education (array), certifications (array), keywords (array). Do not include explanations or text outside JSON.",
-        },
+      contents: [
         {
           role: "user",
-          content: jobText,
+          parts: [
+            {
+              text: `You are a job description parser. Extract structured JSON only with keys: 
+          skills (array), experience (array), education (array), certifications (array), keywords (array).
+          Do not include explanations or text outside JSON.\n\n${jobText}`,
+            },
+          ],
         },
       ],
-      temperature: 0,
-      max_tokens: 500,
-    });
+      generationConfig: {
+        temperature: 0,
+        maxOutputTokens: 500,
+      },
+    })
 
-    const parsed = JSON.parse(response.candidates[0].content[0].text);
+    const parsed = JSON.parse(response.candidates[0].content.parts[0].text.trim());
 
     requirements= {
       skills: parsed.skills || [],
@@ -318,6 +321,23 @@ const analyseResume=async (req, res) => {
     });
   }
 };
+//get all resume analysis of a user
+const userAllResumeAnalysis = async (req,res) => {
+  try {
+    const userId= req.user.id;
+    const analysis = await JobAnalysis.find({userId});
+    if(!analysis){
+      return res.status(404).send("No user's resume analysis found");
+    }
+    res.status(200).send(analysis);
+  } catch (error) {
+    console.error('Get user analysis history error:', error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while fetching user's analysis history"
+    });
+  }
+}
 
 // @route   GET api/analysis/:resumeId
 // @desc    Get analysis history for a specific resume
@@ -475,6 +495,7 @@ const deleteAnalysis= async (req, res) => {
 
 module.exports = {
     deleteAnalysis,
+    userAllResumeAnalysis,
     getAnalysisHistoryById,
     getAnalysisHistory,
     analyseResume

@@ -12,6 +12,22 @@ const generateAccessToken = (id) => {
   return jwt.sign({ UserId: id }, secretKey);
 };
 
+//get profile
+const getProfile = async (req,res) => {
+  try {
+    const userId = req.user.id;
+    const user = await Users.findById(userId);
+    if(!user){
+      return res.status(404).send("user not found")
+    }
+
+    res.status(200).send(user);
+
+  } catch (error) {
+    console.log('error :>> ', error.message);
+    res.status(500).send("Internal server error")
+  }
+}
 //getbyEmail
 const findUser = async (req, res) => {
   try {
@@ -196,6 +212,7 @@ const resetPassword = async (req, res) => {
 };
 
 module.exports = {
+  getProfile,
   findUser,
   createUser,
   updateUser,

@@ -5,7 +5,7 @@ const Resume = require("../models/resumeSchema");
 const skillsData = require("../data/skillsData");
 const experiencePatterns = require("../data/experienceData");
 const certificationKeywords = require("../data/certificationsData");
-const  { GoogleGenAI } = require("@google/genai");
+const { GoogleGenAI } = require("@google/genai");
 
 // Initialize OpenAI
 const geminiAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API });
@@ -108,32 +108,36 @@ Resume text:
 ${resumeText}
 `;
 
-
     const response = await geminiAI.models.generateContent({
-    model: "gemini-2.5-flash",
-      messages: [
-        {
-          role: "system",
-          content: "You are an expert resume parser that extracts structured data from resumes and returns valid JSON only."
-        },
+      model: "gemini-2.5-flash",
+      contents: [
         {
           role: "user",
-          content: prompt
-        }
+          parts: [
+            {
+              text: prompt,
+            },
+          ],
+        },
       ],
-      temperature: 0.1,
-      max_tokens: 2000
+      generationConfig: {
+        temperature: 0.1,
+        max_tokens: 2000,
+      },
     });
 
-    const extractedContent = response.choices[0].message.content.trim();
-    
+    const extractedContent =
+      response.candidates[0].content.parts[0].text.trim();
+
     // Clean up the response to ensure it's valid JSON
     let cleanedContent = extractedContent;
-    if (cleanedContent.startsWith('```json')) {
-      cleanedContent = cleanedContent.replace(/```json\n?/, '').replace(/```$/, '');
+    if (cleanedContent.startsWith("```json")) {
+      cleanedContent = cleanedContent
+        .replace(/```json\n?/, "")
+        .replace(/```$/, "");
     }
-    if (cleanedContent.startsWith('```')) {
-      cleanedContent = cleanedContent.replace(/```\n?/, '').replace(/```$/, '');
+    if (cleanedContent.startsWith("```")) {
+      cleanedContent = cleanedContent.replace(/```\n?/, "").replace(/```$/, "");
     }
 
     const parsedData = JSON.parse(cleanedContent);
@@ -142,46 +146,48 @@ ${resumeText}
     const transformedData = {
       contactInfo: parsedData.contactInfo || {},
       skills: parsedData.skills || [],
-      experience: parsedData.experience?.map(exp => ({
-        jobTitle: exp.jobTitle || '',
-        company: exp.company || '',
-        duration: exp.duration || '',
-        location: exp.location || null,
-        achievements: exp.achievements || []
-      })) || [],
-      education: parsedData.education?.map(edu => ({
-        degree: edu.degree || '',
-        institution: edu.institution || '',
-        graduationYear: edu.graduationYear || null,
-        gpa: edu.gpa || null,
-        location: edu.location || null
-      })) || [],
-      certifications: parsedData.certifications?.map(cert => ({
-        name: cert.name || '',
-        issuer: cert.issuer || '',
-        date: cert.date || null,
-        expiryDate: cert.expiryDate || null
-      })) || [],
+      experience:
+        parsedData.experience?.map((exp) => ({
+          jobTitle: exp.jobTitle || "",
+          company: exp.company || "",
+          duration: exp.duration || "",
+          location: exp.location || null,
+          achievements: exp.achievements || [],
+        })) || [],
+      education:
+        parsedData.education?.map((edu) => ({
+          degree: edu.degree || "",
+          institution: edu.institution || "",
+          graduationYear: edu.graduationYear || null,
+          gpa: edu.gpa || null,
+          location: edu.location || null,
+        })) || [],
+      certifications:
+        parsedData.certifications?.map((cert) => ({
+          name: cert.name || "",
+          issuer: cert.issuer || "",
+          date: cert.date || null,
+          expiryDate: cert.expiryDate || null,
+        })) || [],
       projects: parsedData.projects || [],
       languages: parsedData.languages || [],
-      summary: parsedData.summary || ''
+      summary: parsedData.summary || "",
     };
 
-    console.log('AI extraction successful:', {
+    console.log("AI extraction successful:", {
       skillsCount: transformedData.skills.length,
       experienceCount: transformedData.experience.length,
       educationCount: transformedData.education.length,
-      certificationsCount: transformedData.certifications.length
+      certificationsCount: transformedData.certifications.length,
     });
 
     return transformedData;
-
   } catch (error) {
-    console.error('AI parsing error:', error);
-    console.error('AI response was:', error.message);
-    
+    console.error("AI parsing error:", error);
+    console.error("AI response was:", error.message);
+
     // Fallback to manual parsing if AI fails
-    console.log('Falling back to manual parsing...');
+    console.log("Falling back to manual parsing...");
     return parseResumeDataManual(resumeText);
   }
 };
@@ -196,7 +202,7 @@ const parseResumeDataManual = (text) => {
     certifications: [],
     projects: [],
     languages: [],
-    summary: ''
+    summary: "",
   };
 
   try {
@@ -242,13 +248,15 @@ const parseResumeDataManual = (text) => {
     educationPatterns.forEach((pattern) => {
       const matches = text.match(pattern);
       if (matches) {
-        extractedData.education.push(...matches.map(match => ({
-          degree: match,
-          institution: '',
-          graduationYear: null,
-          gpa: null,
-          location: null
-        })));
+        extractedData.education.push(
+          ...matches.map((match) => ({
+            degree: match,
+            institution: "",
+            graduationYear: null,
+            gpa: null,
+            location: null,
+          }))
+        );
       }
     });
 
@@ -256,13 +264,15 @@ const parseResumeDataManual = (text) => {
     experiencePatterns.forEach((pattern) => {
       const matches = text.match(pattern);
       if (matches) {
-        extractedData.experience.push(...matches.slice(0, 10).map(match => ({
-          jobTitle: match,
-          company: '',
-          duration: '',
-          location: null,
-          achievements: []
-        })));
+        extractedData.experience.push(
+          ...matches.slice(0, 10).map((match) => ({
+            jobTitle: match,
+            company: "",
+            duration: "",
+            location: null,
+            achievements: [],
+          }))
+        );
       }
     });
 
@@ -271,13 +281,12 @@ const parseResumeDataManual = (text) => {
       if (textUpper.includes(cert.toUpperCase())) {
         extractedData.certifications.push({
           name: cert,
-          issuer: '',
+          issuer: "",
           date: null,
-          expiryDate: null
+          expiryDate: null,
         });
       }
     });
-
   } catch (error) {
     console.error("Manual resume parsing error:", error);
   }
@@ -313,11 +322,61 @@ const uploadAndParseResume = async (req, res) => {
       });
     }
 
-    console.log('Starting AI-powered resume parsing...');
-    
+    console.log("Starting AI-powered resume parsing...");
+
     // Parse resume data with AI (with fallback to manual parsing)
     const extractedData = await parseResumeWithAI(extractedText);
 
+    // FIXED: Proper data validation and cleaning
+    const validatedData = {
+      contactInfo: {
+        name: extractedData.contactInfo?.name || null,
+        email: extractedData.contactInfo?.email || null,
+        phone: extractedData.contactInfo?.phone || null,
+        address: extractedData.contactInfo?.address || null,
+      },
+      skills: Array.isArray(extractedData.skills) ? extractedData.skills : [],
+      experience: Array.isArray(extractedData.experience)
+        ? extractedData.experience.map((exp) => ({
+            jobTitle: exp.jobTitle || "",
+            company: exp.company || "",
+            duration: exp.duration || "",
+            location: exp.location || null,
+            achievements: Array.isArray(exp.achievements)
+              ? exp.achievements
+              : [],
+          }))
+        : [],
+      education: Array.isArray(extractedData.education)
+        ? extractedData.education.map((edu) => ({
+            degree: edu.degree || "",
+            institution: edu.institution || "",
+            graduationYear: edu.graduationYear || null,
+            gpa: edu.gpa || null,
+            location: edu.location || null,
+          }))
+        : [],
+      certifications: Array.isArray(extractedData.certifications)
+        ? extractedData.certifications.map((cert) => ({
+            name: cert.name || "",
+            issuer: cert.issuer || "",
+            date: cert.date || null,
+            expiryDate: cert.expiryDate || null,
+          }))
+        : [],
+      summary:
+        typeof extractedData.summary === "string" ? extractedData.summary : "",
+    };
+
+    // Debug log to verify data structure
+    console.log("Validated data structure:", {
+      contactInfo: typeof validatedData.contactInfo,
+      skills: Array.isArray(validatedData.skills),
+      experience: Array.isArray(validatedData.experience),
+      education: Array.isArray(validatedData.education),
+      certifications: Array.isArray(validatedData.certifications),
+      summary: typeof validatedData.summary,
+    });
     // Save resume to database
     const resume = new Resume({
       userId: req.user.id,
@@ -326,7 +385,7 @@ const uploadAndParseResume = async (req, res) => {
       fileSize: req.file.size,
       mimeType: req.file.mimetype,
       originalText: extractedText,
-      extractedData: extractedData,
+      extractedData: validatedData,
     });
 
     await resume.save();
@@ -338,17 +397,18 @@ const uploadAndParseResume = async (req, res) => {
         id: resume._id,
         filename: resume.filename,
         fileSize: resume.fileSize,
-        uploadedAt: resume.createdAt,
+        uploadedAt: resume.uploadedAt,
         extractedData: resume.extractedData,
         textPreview: extractedText.substring(0, 200) + "...",
         aiParsed: true,
         extractionStats: {
-          skillsExtracted: extractedData.skills.length,
-          experienceCount: extractedData.experience.length,
-          educationCount: extractedData.education.length,
-          certificationsCount: extractedData.certifications.length,
-          projectsCount: extractedData.projects?.length || 0
-        }
+          skillsExtracted: validatedData.skills.length,
+          experienceCount: validatedData.experience.length,
+          educationCount: validatedData.education.length,
+          certificationsCount: validatedData.certifications.length,
+          hasSummary: !!validatedData.summary,
+          contactInfo: validatedData.contactInfo
+        },
       },
     });
   } catch (error) {
@@ -392,8 +452,8 @@ const reparseResumeWithAI = async (req, res) => {
       });
     }
 
-    console.log('Re-parsing resume with AI...');
-    
+    console.log("Re-parsing resume with AI...");
+
     // Re-parse with AI
     const extractedData = await parseResumeWithAI(resume.originalText);
 
@@ -413,11 +473,10 @@ const reparseResumeWithAI = async (req, res) => {
           experienceCount: extractedData.experience.length,
           educationCount: extractedData.education.length,
           certificationsCount: extractedData.certifications.length,
-          projectsCount: extractedData.projects?.length || 0
-        }
+          projectsCount: extractedData.projects?.length || 0,
+        },
       },
     });
-
   } catch (error) {
     console.error("Re-parse resume error:", error);
     res.status(500).json({

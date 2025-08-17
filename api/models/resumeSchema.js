@@ -36,21 +36,78 @@ const resumeSchema = new mongoose.Schema({
       type: [String],
       default: [],
     },
-    experience: {
-      type: [String],
-      default: [],
-    },
-    education: {
-      type: [String],
-      default: [],
-    },
-    certifications: {
-      type: [String],
-      default: [],
-    },
-    summary:{
-      type: [String],
-      default: [],
+    experience: [
+      {
+        jobTitle: {
+          type: String,
+          default: "",
+        },
+        company: {
+          type: String,
+          default: "",
+        },
+        duration: {
+          type: String,
+          default: "",
+        },
+        location: {
+          type: String,
+          default: null,
+        },
+        achievements: {
+          type: [String],
+          default: [],
+        },
+      },
+    ],
+
+    education: [
+      {
+        degree: {
+          type: String,
+          default: "",
+        },
+        institution: {
+          type: String,
+          default: "",
+        },
+        graduationYear: {
+          type: String,
+          default: null,
+        },
+        gpa: {
+          type: String,
+          default: null,
+        },
+        location: {
+          type: String,
+          default: null,
+        },
+      },
+    ],
+    certifications: [
+      {
+        name: {
+          type: String,
+          default: "",
+        },
+        issuer: {
+          type: String,
+          default: "",
+        },
+        date: {
+          type: String,
+          default: null,
+        },
+        expiryDate: {
+          type: String,
+          default: null,
+        },
+      },
+    ],
+    summary: {
+      type: String,
+      default: "",
     },
     contactInfo: {
       email: {
