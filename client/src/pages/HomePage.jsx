@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Upload, FileText, Zap, CheckCircle, Star, ArrowRight, Users, Target, Clock, Shield } from 'lucide-react';
+import { UserContext } from '../UserContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function HomePage() {
   const [dragActive, setDragActive] = useState(false);
+  const {token} = useContext(UserContext);
+  const navigate = useNavigate();
 
   const handleDrag = (e) => {
     e.preventDefault();
@@ -101,11 +105,13 @@ export default function HomePage() {
                   <p className="text-gray-600 mb-4">
                     Drag and drop your resume here, or click to browse
                   </p>
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 mb-2">
+                  <button onClick={()=> token ? (navigate('/dashboard')):(navigate('/signup'))}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 mb-2"
+                  >
                     Choose File
                   </button>
                   <p className="text-sm text-gray-500">
-                    Supports PDF, DOC, DOCX (Max 10MB)
+                    Supports PDF, DOC, DOCX (Max 5MB)
                   </p>
                 </div>
               </div>

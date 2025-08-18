@@ -389,7 +389,7 @@ const analyseResume = async (req, res) => {
 const userAllResumeAnalysis = async (req, res) => {
   try {
     const userId = req.user.id;
-    const analysis = await JobAnalysis.find({ userId });
+    const analysis = await JobAnalysis.find({ userId }).sort({ createdAt: -1 });
     if (!analysis) {
       return res.status(404).send("No user's resume analysis found");
     }
@@ -483,11 +483,15 @@ const getAnalysisHistory = async (req, res) => {
 
 const getAnalysisHistoryById = async (req, res) => {
   try {
-    const analysis = await JobAnalysis.findOne({
-      _id: req.params.analysisId,
-      userId: req.user.id,
-    }).populate("resumeId", "filename");
+    const id = req.params.analysisId;
+    console.log(id);
+    const analysis = await JobAnalysis.findById(id);
 
+    // const analysis = await JobAnalysis.findById(id).populate(
+    //   "resumeId",
+    //   "filename"
+    // );
+    console.log("analysis :>> ", analysis);
     if (!analysis) {
       return res.status(404).json({
         success: false,

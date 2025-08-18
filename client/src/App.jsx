@@ -8,6 +8,7 @@ import DashboardPage from "./pages/DashboardPage";
 import ResumeUploadPage from "./pages/ResumeUploadPage";
 import JobAnalysisPage from "./pages/JobAnalysisPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import ViewAnalysisPage from './pages/ViewAnalysisPage';
 import { UserContext } from "./UserContext";
 
 // Protected Route Component
@@ -106,7 +107,14 @@ function App() {
             </ProtectedRoute>
           } 
         />
-
+        <Route 
+          path="/view-analysis/:analysisId" 
+          element={
+            <ProtectedRoute>
+              <ViewAnalysisPage />
+            </ProtectedRoute>
+          } 
+        />
         {/* Catch all route - redirect to appropriate page */}
         <Route 
           path="*" 

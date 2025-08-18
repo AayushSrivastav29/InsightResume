@@ -34,51 +34,67 @@ const ResetPasswordPage = () => {
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "0 auto", padding: "20px" }}>
-      <form onSubmit={handleSubmit}>
-        <h3>Reset password</h3>
+    <div className="min-h-screen bg-white flex items-center justify-center p-5">
+      <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8 border border-gray-200">
+        <div className="space-y-6">
+          <h3 className="text-2xl font-bold text-black text-center mb-6">
+            Reset Password
+          </h3>
+          
+          <div className="space-y-2">
+            <label htmlFor="email" className="block text-sm font-medium text-black">
+              Enter your email:
+            </label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full px-3 py-2 border border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-blue-900"
+              placeholder="your.email@example.com"
+            />
+          </div>
 
-        <label htmlFor="email">Enter your email:</label>
-        <input
-          type="email"
-          name="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          style={{ width: "100%", marginBottom: "15px" }}
-        />
+          <div className="space-y-2">
+            <label htmlFor="password" className="block text-sm font-medium text-black">
+              Enter your new password:
+            </label>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full px-3 py-2 border border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-blue-900"
+              placeholder="Enter new password"
+            />
+          </div>
 
-        <label htmlFor="password">Enter your new password:</label>
-        <input
-          type="password"
-          name="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{ width: "100%", marginBottom: "15px" }}
-        />
+          <button
+            type="button"
+            onClick={handleSubmit}
+            className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 font-medium"
+          >
+            Reset Password
+          </button>
+        </div>
 
-        <button type="submit" style={{ padding: "10px 15px" }}>
-          Reset Password
-        </button>
-      </form>
-
-      {message.text && (
-        <p
-          style={{
-            marginTop: "15px",
-            padding: "10px",
-            borderRadius: "4px",
-            backgroundColor: message.type === "success" ? "#d4edda" : "#f8d7da",
-            color: message.type === "success" ? "#155724" : "#721c24",
-          }}
-        >
-          {message.text}
-        </p>
-      )}
+        {message.text && (
+          <div
+            className={`mt-6 p-4 rounded-md ${
+              message.type === "success"
+                ? "bg-green-50 text-green-800 border border-green-200"
+                : "bg-red-50 text-red-800 border border-red-200"
+            }`}
+          >
+            {message.text}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
-
 export default ResetPasswordPage;

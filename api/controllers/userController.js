@@ -202,8 +202,8 @@ const resetPassword = async (req, res) => {
       return res.status(400).send("Invalid or expired reset link");
     }
 
-    res.sendFile(
-      "http://localhost:4000/src/pages/resetpassword.jsx"
+    res.redirect(
+      "http://localhost:5173/reset-password"
     );
   } catch (error) {
     console.log(error);

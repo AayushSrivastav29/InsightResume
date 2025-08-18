@@ -73,7 +73,7 @@ export default function JobAnalysisPage() {
           headers: { Authorization: `${token}` },
         }
       );
-
+      console.log('response.data :>> ', response.data);
       setAnalysisResult(response.data);
     } catch (error) {
       console.error("Analysis error:", error);
@@ -139,13 +139,13 @@ export default function JobAnalysisPage() {
                           <div
                             key={resume._id}
                             className={`p-4 border rounded-lg cursor-pointer transition-all ${
-                              selectedResume === resume._id
+                              selectedResume === resume
                                 ? "border-blue-500 bg-blue-50"
                                 : "border-gray-200 hover:border-gray-300"
                             }`}
                             onClick={() => {
-                              console.log('clicked resume :>> ');
-                              setSelectedResume(resume.id)}}
+                              console.log('clicked resume :>> ', resume.id);
+                              setSelectedResume(resume)}}
                           >
                             <div className="flex items-center">
                               <FileText className="w-5 h-5 text-gray-600 mr-3" />
@@ -407,7 +407,7 @@ export default function JobAnalysisPage() {
                       )}
                     </ul>
                   ) : (
-                    <p className="text-gray-600">Analyzing your strengths...</p>
+                    <p className="text-gray-600">No related strengths found with this job</p>
                   )}
                 </div>
 
@@ -466,9 +466,6 @@ export default function JobAnalysisPage() {
 
               {/* Action Buttons */}
               <div className="flex justify-center space-x-4">
-                <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
-                  Save Analysis
-                </button>
                 <button
                   onClick={() => {
                     setAnalysisResult(null);
