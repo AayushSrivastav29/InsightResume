@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
+
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../UserContext";
 
 const NavBar = () => {
+  const {token} = useContext(UserContext);
   const navigate = useNavigate();
   return (
     <div>
@@ -40,7 +43,7 @@ const NavBar = () => {
                 </a>
                 <button
                   className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105"
-                  onClick={() => navigate("/signup")}
+                  onClick={()=> token ? (navigate('/dashboard')):(navigate('/signup'))}
                 >
                   Get Started
                 </button>

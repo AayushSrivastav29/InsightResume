@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Upload, FileText, Zap, CheckCircle, Star, ArrowRight, Users, Target, Clock, Shield } from 'lucide-react';
 import { UserContext } from '../UserContext';
 import { useNavigate } from 'react-router-dom';
+import NavBar from '../components/NavBar';
 
 export default function HomePage() {
   const [dragActive, setDragActive] = useState(false);
@@ -64,6 +65,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+      <NavBar/>
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
@@ -105,7 +107,7 @@ export default function HomePage() {
                   <p className="text-gray-600 mb-4">
                     Drag and drop your resume here, or click to browse
                   </p>
-                  <button onClick={()=> token ? (navigate('/dashboard')):(navigate('/signup'))}
+                  <button onClick={()=> token ? (navigate('/upload')):(navigate('/signup'))}
                   className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 mb-2"
                   >
                     Choose File
@@ -224,7 +226,7 @@ export default function HomePage() {
           
           <div className="text-center mt-12">
             <button
-            onClick={navigate('/')}
+            onClick={()=> token ? (navigate('/dashboard')):(navigate('/signup'))}
              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200 transform hover:scale-105 shadow-lg">
               Try It Now - It's Free!
               <ArrowRight className="ml-2 w-5 h-5 inline" />
@@ -276,7 +278,7 @@ export default function HomePage() {
             Get instant AI-powered analysis and boost your job match score today
           </p>
           <button
-          onClick={navigate('/signup')}
+          onClick={()=> token ? (navigate('/analyze')):(navigate('/signup'))}
           className="bg-white hover:bg-gray-100 text-blue-600 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200 transform hover:scale-105 shadow-lg">
             Start Free Analysis
             <ArrowRight className="ml-2 w-5 h-5 inline" />
@@ -320,7 +322,7 @@ export default function HomePage() {
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2025 Insight Resume. All rights reserved.</p>
+            <p>&copy; 2025 Insight Resume. Made by Aayush Sivastav. All rights reserved.</p>
           </div>
         </div>
       </footer>
