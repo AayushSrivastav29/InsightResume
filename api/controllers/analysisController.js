@@ -230,9 +230,8 @@ const analyzeResumeMatch = (resumeData, jobRequirements, jobTitle) => {
 
   // Generate suggestions based on analysis
   if (analysis.missingSkills.length > 0) {
-    analysis.suggestions.push(`${analysis.suggestions}`);
     analysis.suggestions.push(
-      `Consider learning these in-demand skills: ${analysis.missingSkills
+      `Consider adding these in-demand skills: ${analysis.missingSkills
         .slice(0, 5)
         .join(", ")}`
     );

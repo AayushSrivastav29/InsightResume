@@ -1,9 +1,12 @@
 const express = require("express");
 const resumeController = require("../controllers/resumeController");
 const auth = require("../middlewares/auth");
-const upload = require("../middlewares/upload");
-
-const router = express.Router();
+// const upload = require("../middlewares/upload");
+const multer = require('multer');
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB
+});const router = express.Router();
 
 
 router.get("/", auth, resumeController.getUserResumes);

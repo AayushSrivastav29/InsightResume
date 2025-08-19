@@ -66,7 +66,7 @@ export default function ResumeUploadPage() {
     }
 
     // Validate file size (10MB max)
-    const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+    const maxSize = 5 * 1024 * 1024; // 10MB in bytes
     if (selectedFile.size > maxSize) {
       setError("File size must be less than 10MB");
       return;
@@ -332,10 +332,37 @@ export default function ResumeUploadPage() {
                           .slice(0, 3)
                           .map((exp, index) => (
                             <div
-                              key={index}
+                              key={exp._id || index}
                               className="p-3 bg-gray-50 rounded-lg"
                             >
-                              <p className="text-sm text-gray-700">{exp}</p>
+                              <h4 className="font-medium text-gray-800">
+                                {exp.jobTitle}
+                              </h4>
+                              <div className="text-sm text-green-800">
+                                {Object.entries(exp)
+                                  .filter(
+                                    ([key, value]) =>
+                                      key !== "_id" &&
+                                      value &&
+                                      typeof value !== "object" &&
+                                      !Array.isArray(value)
+                                  )
+                                  .map(([key, value]) => (
+                                    <div key={key}>
+                                      <span className="font-medium capitalize">
+                                        {key}:
+                                      </span>{" "}
+                                      {value}
+                                    </div>
+                                  ))}
+                              </div>
+                              {exp.achievements?.length > 0 && (
+                                <ul className="mt-2 list-disc list-inside text-sm text-gray-600">
+                                  {exp.achievements.map((achievement, i) => (
+                                    <li key={i}>{achievement}</li>
+                                  ))}
+                                </ul>
+                              )}
                             </div>
                           ))}
                       </div>
@@ -347,11 +374,16 @@ export default function ResumeUploadPage() {
                   <div key={index} className="p-3 bg-gray-50 rounded-lg">
                     <div className="text-sm text-gray-700">
                       <p className="font-medium text-gray-900">{edu.degree}</p>
-                      {(edu.institution  || edu.college ) && (
-                      <><p className="text-gray-600">{edu.institution}</p><div className="flex justify-between items-center mt-1">
-                          <span>Graduated: {edu.graduationYear}</span>
-                          {edu.gpa && <span>GPA: {edu.gpa}</span>}
-                        </div></>
+                      {(edu.institution || edu.college) && (
+                        <>
+                          <p className="text-gray-600">{edu.institution}</p>
+                          <div className="flex justify-between items-center mt-1">
+                            {edu.graduationYear && 
+                            <span>Graduated: {edu.graduationYear}</span>
+                            }
+                            {edu.gpa && <span>GPA: {edu.gpa}</span>}
+                          </div>
+                        </>
                       )}
                       {edu.location && (
                         <p className="text-gray-500 text-xs mt-1">
@@ -376,9 +408,24 @@ export default function ResumeUploadPage() {
                               key={index}
                               className="p-2 bg-green-50 rounded-lg"
                             >
-                              <p className="text-sm text-green-800 font-medium">
-                                {cert}
-                              </p>
+                              <div className="text-sm text-green-800">
+                                {Object.entries(cert)
+                                  .filter(
+                                    ([key, value]) =>
+                                      key !== "_id" &&
+                                      value &&
+                                      typeof value !== "object" &&
+                                      !Array.isArray(value)
+                                  )
+                                  .map(([key, value]) => (
+                                    <div key={key}>
+                                      <span className="font-medium capitalize">
+                                        {key}:
+                                      </span>{" "}
+                                      {value}
+                                    </div>
+                                  ))}
+                              </div>
                             </div>
                           )
                         )}

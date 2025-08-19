@@ -1,4 +1,5 @@
 const fs = require("fs").promises;
+const path = require('path');
 const pdfParse = require("pdf-parse");
 const mammoth = require("mammoth");
 const Resume = require("../models/resumeSchema");
@@ -6,6 +7,7 @@ const skillsData = require("../data/skillsData");
 const experiencePatterns = require("../data/experienceData");
 const certificationKeywords = require("../data/certificationsData");
 const { GoogleGenAI } = require("@google/genai");
+const { b2Service } = require("../utils/upload");
 
 // Initialize OpenAI
 const geminiAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API });
@@ -298,6 +300,7 @@ const parseResumeDataManual = (text) => {
 // @desc    Upload and parse resume with AI
 // @access  Private
 const uploadAndParseResume = async (req, res) => {
+    let tempFilePath = null; 
   try {
     if (!req.file) {
       return res.status(400).json({
@@ -305,20 +308,41 @@ const uploadAndParseResume = async (req, res) => {
         message: "No file uploaded",
       });
     }
+    const userId = req.user.id;
+    //upload file with help of b2
+    const uploadResult = await b2Service.uploadFile(req.file, userId);
+
+    if (!uploadResult.success) {
+      return res.status(500).json({ 
+        success: false,
+        message: "Failed to upload file to B2"
+      });
+    }
+
+    // Create temporary file for text extraction
+    const tempDir = `./temp/${userId}`;
+    await fs.mkdir(tempDir, { recursive: true });
+    tempFilePath = path.join(tempDir, `${Date.now()}-${req.file.originalname}`);
+    await fs.writeFile(tempFilePath, req.file.buffer);
 
     // Extract text from uploaded file
     const extractedText = await extractTextFromFile(
-      req.file.path,
+      tempFilePath,
       req.file.mimetype
     );
 
+    // Clean up temporary file
+    await fs.unlink(tempFilePath);
+    tempFilePath = null;
+
     if (!extractedText || extractedText.trim().length === 0) {
-      // Clean up uploaded file if text extraction fails
-      await fs.unlink(req.file.path).catch(console.error);
+      // Delete B2 file since extraction failed
+      await b2Service.deleteFile(uploadResult.fileId, uploadResult.fileName)
+        .catch(e => console.error('B2 deletion failed:', e));
+      
       return res.status(400).json({
         success: false,
-        message:
-          "Could not extract text from file. Please ensure the file is not corrupted.",
+        message: "Could not extract text from file. Please ensure the file is not corrupted.",
       });
     }
 
@@ -381,7 +405,7 @@ const uploadAndParseResume = async (req, res) => {
     const resume = new Resume({
       userId: req.user.id,
       filename: req.file.originalname,
-      filePath: req.file.path,
+      filePath: uploadResult.fileUrl,
       fileSize: req.file.size,
       mimeType: req.file.mimetype,
       originalText: extractedText,
@@ -397,6 +421,7 @@ const uploadAndParseResume = async (req, res) => {
         id: resume._id,
         filename: resume.filename,
         fileSize: resume.fileSize,
+        fileUrl: uploadResult.fileUrl,
         uploadedAt: resume.uploadedAt,
         extractedData: resume.extractedData,
         textPreview: extractedText.substring(0, 200) + "...",
@@ -407,14 +432,14 @@ const uploadAndParseResume = async (req, res) => {
           educationCount: validatedData.education.length,
           certificationsCount: validatedData.certifications.length,
           hasSummary: !!validatedData.summary,
-          contactInfo: validatedData.contactInfo
+          contactInfo: validatedData.contactInfo,
         },
       },
     });
   } catch (error) {
-    // Clean up uploaded file if there's an error
-    if (req.file && req.file.path) {
-      await fs.unlink(req.file.path).catch(console.error);
+   // Clean up temporary file if created
+    if (tempFilePath) {
+      await fs.unlink(tempFilePath).catch(console.error);
     }
 
     if (

@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@google/genai": "^1.14.0",
+    "backblaze-b2": "^1.7.1",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "docx-parser": "^0.2.1",
