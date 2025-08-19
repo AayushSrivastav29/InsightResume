@@ -223,7 +223,9 @@ export default function HomePage() {
           </div>
           
           <div className="text-center mt-12">
-            <button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200 transform hover:scale-105 shadow-lg">
+            <button
+            onClick={navigate('/')}
+             className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200 transform hover:scale-105 shadow-lg">
               Try It Now - It's Free!
               <ArrowRight className="ml-2 w-5 h-5 inline" />
             </button>
@@ -273,7 +275,9 @@ export default function HomePage() {
           <p className="text-xl text-blue-100 mb-8">
             Get instant AI-powered analysis and boost your job match score today
           </p>
-          <button className="bg-white hover:bg-gray-100 text-blue-600 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200 transform hover:scale-105 shadow-lg">
+          <button
+          onClick={navigate('/signup')}
+          className="bg-white hover:bg-gray-100 text-blue-600 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200 transform hover:scale-105 shadow-lg">
             Start Free Analysis
             <ArrowRight className="ml-2 w-5 h-5 inline" />
           </button>
