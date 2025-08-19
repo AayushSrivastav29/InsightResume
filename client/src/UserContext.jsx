@@ -7,7 +7,7 @@ export const UserContextProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
   
-  const path = 'http://localhost:3000'; // Change this to your backend URL
+  const path = 'https://insightresume-backend.onrender.com'; // Change this to your backend URL
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
