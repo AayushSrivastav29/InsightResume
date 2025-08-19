@@ -67,9 +67,13 @@ function App() {
         <Route
           path="/view-analysis/:analysisId"
           element={
-            <ProtectedRoute>
+            !isAuthenticated ? (
+              <ProtectedRoute>
+                <ViewAnalysisPage />
+              </ProtectedRoute>
+            ) : (
               <ViewAnalysisPage />
-            </ProtectedRoute>
+            )
           }
         />
         {/* Catch all route - redirect to appropriate page */}
