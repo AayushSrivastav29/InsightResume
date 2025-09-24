@@ -1,5 +1,4 @@
 // certificationKeywords.js
-// Large cross-domain list of certification keywords for resume parsing / matching
 
 const certificationKeywords = [
   // --- CLOUD & INFRASTRUCTURE ---

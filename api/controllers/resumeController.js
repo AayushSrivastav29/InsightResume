@@ -296,9 +296,7 @@ const parseResumeDataManual = (text) => {
   return extractedData;
 };
 
-// @route   POST api/resume/upload
 // @desc    Upload and parse resume with AI
-// @access  Private
 const uploadAndParseResume = async (req, res) => {
     let tempFilePath = null; 
   try {
@@ -460,9 +458,8 @@ const uploadAndParseResume = async (req, res) => {
   }
 };
 
-// @route   POST api/resume/:id/reparse
 // @desc    Re-parse existing resume with AI
-// @access  Private
+
 const reparseResumeWithAI = async (req, res) => {
   try {
     const resume = await Resume.findOne({
@@ -511,24 +508,15 @@ const reparseResumeWithAI = async (req, res) => {
   }
 };
 
-// @route   GET api/resume/
 // @desc    Get user's resumes
-// @access  Private
 const getUserResumes = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
-
-    // Get total count for pagination
     const totalCount = await Resume.countDocuments({ userId: req.user.id });
 
-    // Get resumes with pagination
     const resumes = await Resume.find({ userId: req.user.id })
-      .select("-originalText -filePath") // Exclude large text field and file path for security
-      .sort({ uploadedAt: -1 })
-      .skip(skip)
-      .limit(limit);
+      .select("-originalText -filePath") 
+      .sort({ uploadedAt: -1 });
+
 
     res.json({
       success: true,
@@ -539,15 +527,9 @@ const getUserResumes = async (req, res) => {
         mimeType: resume.mimeType,
         uploadedAt: resume.uploadedAt,
         extractedData: resume.extractedData,
-      })),
-      pagination: {
-        currentPage: page,
-        totalPages: Math.ceil(totalCount / limit),
-        totalCount,
-        hasNext: page < Math.ceil(totalCount / limit),
-        hasPrev: page > 1,
-      },
+      }))
     });
+
   } catch (error) {
     console.error("Get resumes error:", error);
     res.status(500).json({
@@ -557,9 +539,8 @@ const getUserResumes = async (req, res) => {
   }
 };
 
-// @route   GET api/resume/:id
 // @desc    Get specific resume by ID
-// @access  Private
+
 const getResumeByID = async (req, res) => {
   try {
     const resume = await Resume.findOne({
@@ -581,7 +562,7 @@ const getResumeByID = async (req, res) => {
         filename: resume.filename,
         fileSize: resume.fileSize,
         mimeType: resume.mimeType,
-        uploadedAt: resume.createdAt,
+        uploadedAt: resume.uploadedAt,
         extractedData: resume.extractedData,
         originalText: resume.originalText,
       },
@@ -595,9 +576,7 @@ const getResumeByID = async (req, res) => {
   }
 };
 
-// @route   DELETE api/resume/:id
 // @desc    Delete resume
-// @access  Private
 const deleteResume = async (req, res) => {
   try {
     const resume = await Resume.findOne({
@@ -638,9 +617,7 @@ const deleteResume = async (req, res) => {
   }
 };
 
-// @route   PUT api/resume/:id/update-extracted-data
 // @desc    Update extracted data for a resume (manual correction)
-// @access  Private
 const updateExtractedData = async (req, res) => {
   try {
     const { extractedData } = req.body;

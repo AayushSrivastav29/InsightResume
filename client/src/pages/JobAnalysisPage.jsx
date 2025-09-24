@@ -148,7 +148,6 @@ export default function JobAnalysisPage() {
                               setSelectedResume(resume)}}
                           >
                             <div className="flex items-center">
-                              <FileText className="w-5 h-5 text-gray-600 mr-3" />
                               <div>
                                 <h3 className="font-medium text-gray-900">
                                   {resume.filename}
@@ -174,16 +173,16 @@ export default function JobAnalysisPage() {
                     </h3>
                     <ul className="space-y-2 text-sm text-blue-800">
                       <li className="flex items-start">
-                        <CheckCircle className="w-4 h-4 text-blue-600 mr-2 mt-0.5 flex-shrink-0" />
-                        Be specific with job titles for better results
+                        
+                       ~ Be specific with job titles for better results
                       </li>
                       <li className="flex items-start">
-                        <CheckCircle className="w-4 h-4 text-blue-600 mr-2 mt-0.5 flex-shrink-0" />
-                        Include full job descriptions when available
+                        
+                       ~ Include full job descriptions when available
                       </li>
                       <li className="flex items-start">
-                        <CheckCircle className="w-4 h-4 text-blue-600 mr-2 mt-0.5 flex-shrink-0" />
-                        Analysis takes 10-30 seconds to complete
+                        
+                       ~ Analysis takes 10-30 seconds to complete
                       </li>
                     </ul>
                   </div>
@@ -334,7 +333,6 @@ export default function JobAnalysisPage() {
                 {/* Matched Skills */}
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
                   <div className="flex items-center mb-4">
-                    <CheckCircle className="w-6 h-6 text-green-600 mr-3" />
                     <h3 className="text-xl font-bold text-gray-900">
                       Matched Skills
                     </h3>
@@ -400,7 +398,6 @@ export default function JobAnalysisPage() {
                       {analysisResult.analysis.strengthAreas.map(
                         (strength, index) => (
                           <li key={index} className="flex items-start">
-                            <CheckCircle className="w-4 h-4 text-blue-600 mr-2 mt-1 flex-shrink-0" />
                             <span className="text-gray-700">{strength}</span>
                           </li>
                         )

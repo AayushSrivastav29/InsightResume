@@ -81,7 +81,7 @@ export default function SignupPage() {
     if (!validateForm()) return;
 
     setLoading(true);
-    
+
     try {
       let response;
       if (isLogin) {
@@ -97,16 +97,18 @@ export default function SignupPage() {
         };
         response = await axios.post(`${path}/api/user/create`, user);
       }
-      
+
       // Handle successful authentication
       login(response.data.token, response.data.user);
-      navigate('/dashboard');
-      
+      navigate("/dashboard");
     } catch (error) {
-      console.error('Authentication error:', error);
-      const errorMessage = error.response?.data?.message || 
-        (isLogin ? 'Login failed' : 'Registration failed');
+      console.error("Authentication error:", error);
+      const errorMessage =
+        error.response.data ||
+        (isLogin ? "Login failed" : "Registration failed");
+      console.log("errorMessage :>> ", errorMessage);
       setErrors({ submit: errorMessage });
+      console.log("errors :>> ", errors);
     } finally {
       setLoading(false);
     }
@@ -138,7 +140,7 @@ export default function SignupPage() {
       setShowModal(false);
       setEmail("");
     } catch (error) {
-      console.error('Password reset error:', error);
+      console.error("Password reset error:", error);
       alert(error.response?.data?.message || "Failed to send reset link");
     }
   };
@@ -154,7 +156,9 @@ export default function SignupPage() {
       <div className="relative w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2 cursor-pointer"
+          onClick={()=>navigate('/')}
+          >
             Insight Resume
           </h1>
           <p className="text-gray-600">
@@ -199,15 +203,13 @@ export default function SignupPage() {
                       First Name
                     </label>
                     <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <User className="h-5 w-5 text-gray-400" />
-                      </div>
+
                       <input
                         type="text"
                         name="firstName"
                         value={formData.firstName}
                         onChange={handleInputChange}
-                        className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
+                        className={`block w-full pl-5 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
                           errors.firstName
                             ? "border-red-300 focus:border-red-500 focus:ring-red-200"
                             : "border-gray-300 focus:border-blue-500 focus:ring-blue-200"
@@ -226,15 +228,13 @@ export default function SignupPage() {
                       Last Name
                     </label>
                     <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <User className="h-5 w-5 text-gray-400" />
-                      </div>
+
                       <input
                         type="text"
                         name="lastName"
                         value={formData.lastName}
                         onChange={handleInputChange}
-                        className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
+                        className={`block w-full pl-5 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
                           errors.lastName
                             ? "border-red-300 focus:border-red-500 focus:ring-red-200"
                             : "border-gray-300 focus:border-blue-500 focus:ring-blue-200"
@@ -257,15 +257,13 @@ export default function SignupPage() {
                   Email Address
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Mail className="h-5 w-5 text-gray-400" />
-                  </div>
+
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
+                    className={`block w-full pl-5 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
                       errors.email
                         ? "border-red-300 focus:border-red-500 focus:ring-red-200"
                         : "border-gray-300 focus:border-blue-500 focus:ring-blue-200"
@@ -284,15 +282,13 @@ export default function SignupPage() {
                   Password
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-gray-400" />
-                  </div>
+
                   <input
                     type={showPassword ? "text" : "password"}
                     name="password"
                     value={formData.password}
                     onChange={handleInputChange}
-                    className={`block w-full pl-10 pr-10 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
+                    className={`block w-full pl-5 pr-10 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
                       errors.password
                         ? "border-red-300 focus:border-red-500 focus:ring-red-200"
                         : "border-gray-300 focus:border-blue-500 focus:ring-blue-200"
@@ -323,15 +319,13 @@ export default function SignupPage() {
                     Confirm Password
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Lock className="h-5 w-5 text-gray-400" />
-                    </div>
+
                     <input
                       type={showConfirmPassword ? "text" : "password"}
                       name="confirmPassword"
                       value={formData.confirmPassword}
                       onChange={handleInputChange}
-                      className={`block w-full pl-10 pr-10 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
+                      className={`block w-full pl-5 pr-10 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
                         errors.confirmPassword
                           ? "border-red-300 focus:border-red-500 focus:ring-red-200"
                           : "border-gray-300 focus:border-blue-500 focus:ring-blue-200"
@@ -487,16 +481,20 @@ export default function SignupPage() {
           </button>
         </div>
 
-        {/* Security Note */}
-        <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-          <div className="flex items-center">
-            <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
-            <p className="text-xs text-green-700">
-              Your data is encrypted and secure. We never share your
-              information.
-            </p>
-          </div>
+        <div>
+          {errors && (
+             <div className="mt-4 space-y-1 text-center">
+              {Object.values(errors).map((errorMessage, index) => {
+                return (
+                <p key={index} className="mt-1 text-sm text-red-600 font-medium">
+                  {errorMessage}
+                </p>
+                );
+              })}
+            </div>
+          )}
         </div>
+
       </div>
     </div>
   );

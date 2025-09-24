@@ -10,6 +10,7 @@ import JobAnalysisPage from "./pages/JobAnalysisPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ViewAnalysisPage from "./pages/ViewAnalysisPage";
 import { UserContext } from "./UserContext";
+import ViewResumePage from "./pages/ViewResumePage";
 
 // Protected Route Component
 function ProtectedRoute({ children }) {
@@ -76,16 +77,21 @@ function App() {
             )
           }
         />
-        {/* Catch all route - redirect to appropriate page */}
-        {/* <Route 
-          path="*" 
+        <Route
+          path="/view-resume/:resumeId"
           element={
-            isAuthenticated ? 
-            <Navigate to="/dashboard" replace /> : 
-            <Navigate to="/" replace />
-          } 
-        /> */}
+            !isAuthenticated ? (
+              <ProtectedRoute>
+                <ViewResumePage />
+              </ProtectedRoute>
+            ) : (
+              <ViewResumePage />
+            )
+          }
+        />
+        <Route path="*" element={<h1 className="text-2xl font-semibold text-gray-600 mb-6">Page not found</h1>}/>
       </Routes>
+
     </div>
   );
 }

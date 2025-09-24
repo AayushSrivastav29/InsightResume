@@ -2,7 +2,6 @@ import React, { useState, useContext, useRef } from "react";
 import {
   Upload,
   FileText,
-  CheckCircle,
   AlertCircle,
   X,
   Eye,
@@ -250,9 +249,6 @@ export default function ResumeUploadPage() {
               /* Success State */
               <div className="text-center space-y-6">
                 <div className="flex items-center justify-center">
-                  <div className="p-4 bg-green-100 rounded-full">
-                    <CheckCircle className="w-12 h-12 text-green-600" />
-                  </div>
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">
@@ -459,7 +455,6 @@ export default function ResumeUploadPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-3">
                 <div className="flex items-start">
-                  <CheckCircle className="w-5 h-5 text-green-600 mr-3 mt-0.5" />
                   <div>
                     <h3 className="font-medium text-gray-900">
                       Use standard formats
@@ -470,7 +465,6 @@ export default function ResumeUploadPage() {
                   </div>
                 </div>
                 <div className="flex items-start">
-                  <CheckCircle className="w-5 h-5 text-green-600 mr-3 mt-0.5" />
                   <div>
                     <h3 className="font-medium text-gray-900">
                       Keep it under 5MB
@@ -483,7 +477,6 @@ export default function ResumeUploadPage() {
               </div>
               <div className="space-y-3">
                 <div className="flex items-start">
-                  <CheckCircle className="w-5 h-5 text-green-600 mr-3 mt-0.5" />
                   <div>
                     <h3 className="font-medium text-gray-900">
                       Use clear formatting
@@ -494,7 +487,6 @@ export default function ResumeUploadPage() {
                   </div>
                 </div>
                 <div className="flex items-start">
-                  <CheckCircle className="w-5 h-5 text-green-600 mr-3 mt-0.5" />
                   <div>
                     <h3 className="font-medium text-gray-900">
                       Include keywords

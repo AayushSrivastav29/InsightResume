@@ -43,7 +43,7 @@ const parseJobRequirements = async (jobText) => {
 
     let rawText = response.candidates[0].content.parts[0].text.trim();
 
-    // ✅ Strip ```json ... ``` wrappers if present
+    // Strip ```json ... ``` wrappers if present
     if (rawText.startsWith("```")) {
       rawText = rawText.replace(/```json|```/g, "").trim();
     }
@@ -192,8 +192,16 @@ const analyzeResumeMatch = (resumeData, jobRequirements, jobTitle) => {
   }
 
   // Experience matching (30% weight)
-  const hasExperience = resumeData.extractedData.experience.length > 0;
-  analysis.score.experience = hasExperience ? 85 : 60; // Basic scoring
+  const experienceItems = resumeData.extractedData.experience;
+  if (experienceItems.length === 0) {
+    analysis.score.experience = 30;
+  } else if (experienceItems.length === 1) {
+    analysis.score.experience = 60;
+  } else if (experienceItems.length === 2) {
+    analysis.score.experience = 75;
+  } else {
+    analysis.score.experience = 85;
+  }
 
   // Education matching (20% weight)
   const hasEducation = resumeData.extractedData.education.length > 0;
@@ -223,7 +231,7 @@ const analyzeResumeMatch = (resumeData, jobRequirements, jobTitle) => {
     analysis.score.skills * 0.4 +
       analysis.score.experience * 0.3 +
       analysis.score.education * 0.2 +
-      10 // 10% base score for having a resume
+      10 // 10% base score
   );
 
   analysis.matchPercentage = analysis.score.overall;
@@ -245,7 +253,7 @@ const analyzeResumeMatch = (resumeData, jobRequirements, jobTitle) => {
 
   if (analysis.score.skills > 80) {
     analysis.strengthAreas.push(
-      "Strong technical skill set matching job requirements"
+      "Strong technical skill matching job requirements"
     );
   }
 
@@ -268,34 +276,9 @@ const analyzeResumeMatch = (resumeData, jobRequirements, jobTitle) => {
     analysis.improvementAreas.push("More relevant work experience needed");
   }
 
-  // Job-specific suggestions
-  const jobTitleLower = jobTitle.toLowerCase();
-  if (jobTitleLower.includes("frontend") || jobTitleLower.includes("ui")) {
-    analysis.suggestions.push(
-      "Focus on frontend technologies like React, Vue, or Angular"
-    );
-  } else if (
-    jobTitleLower.includes("backend") ||
-    jobTitleLower.includes("api")
-  ) {
-    analysis.suggestions.push(
-      "Emphasize backend technologies and API development experience"
-    );
-  } else if (
-    jobTitleLower.includes("fullstack") ||
-    jobTitleLower.includes("full stack")
-  ) {
-    analysis.suggestions.push(
-      "Showcase both frontend and backend development skills"
-    );
-  }
-
   return analysis;
 };
 
-// @route   POST api/analysis/job-description
-// @desc    Analyze against title + job description
-// @access  Private
 const analyseResume = async (req, res) => {
   try {
     const { resumeId, jobTitle, jobDescription } = req.body;
@@ -384,6 +367,7 @@ const analyseResume = async (req, res) => {
     });
   }
 };
+
 //get all resume analysis of a user
 const userAllResumeAnalysis = async (req, res) => {
   try {
@@ -402,16 +386,11 @@ const userAllResumeAnalysis = async (req, res) => {
   }
 };
 
-// @route   GET api/analysis/:resumeId
-// @desc    Get analysis history for a specific resume
-// @access  Private
+// Get analysis history for a specific resume
 
 const getAnalysisHistory = async (req, res) => {
   try {
     const { resumeId } = req.params;
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
 
     // Verify resume belongs to user
     const resume = await Resume.findOne({
@@ -426,11 +405,7 @@ const getAnalysisHistory = async (req, res) => {
       });
     }
 
-    // Get total count for pagination
-    const totalCount = await JobAnalysis.countDocuments({
-      resumeId: resumeId,
-      userId: req.user.id,
-    });
+
 
     // Get analysis history
     const analyses = await JobAnalysis.find({
@@ -438,9 +413,7 @@ const getAnalysisHistory = async (req, res) => {
       userId: req.user.id,
     })
       .select("-userId") // Exclude userId from response
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
+      .sort({ createdAt: -1 });
 
     res.json({
       success: true,
@@ -459,13 +432,7 @@ const getAnalysisHistory = async (req, res) => {
           suggestions: analysis.analysis.suggestions.length,
         },
       })),
-      pagination: {
-        currentPage: page,
-        totalPages: Math.ceil(totalCount / limit),
-        totalCount,
-        hasNext: page < Math.ceil(totalCount / limit),
-        hasPrev: page > 1,
-      },
+
     });
   } catch (error) {
     console.error("Get analysis history error:", error);
@@ -476,9 +443,7 @@ const getAnalysisHistory = async (req, res) => {
   }
 };
 
-// @route   GET api/analysis/detail/:analysisId
 // @desc    Get detailed analysis by ID
-// @access  Private
 
 const getAnalysisHistoryById = async (req, res) => {
   try {
@@ -527,9 +492,6 @@ const getAnalysisHistoryById = async (req, res) => {
   }
 };
 
-// @route   DELETE api/analysis/:analysisId
-// @desc    Delete analysis
-// @access  Private
 const deleteAnalysis = async (req, res) => {
   try {
     const analysis = await JobAnalysis.findOneAndDelete({

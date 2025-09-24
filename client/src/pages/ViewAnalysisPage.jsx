@@ -112,7 +112,6 @@ const ViewAnalysisPage = () => {
             <div className="flex items-center justify-between mb-4">
               <h1 className="text-2xl font-bold text-gray-900">{analysis.jobTitle}</h1>
               <div className={`px-4 py-2 rounded-full text-lg font-semibold ${getMatchColor(analysis?.matchPercentage || 0)}`}>
-                <Target className="w-5 h-5 inline mr-2" />
                 {analysis?.matchPercentage || 0}% Match
               </div>
             </div>
@@ -122,31 +121,11 @@ const ViewAnalysisPage = () => {
           </div>
         </div>
 
-{/* 
-analysis: {
-        id: analysis._id,
-        jobTitle: analysis.jobTitle,
-        jobDescription: analysis.jobDescription,
-        resume: {
-          id: analysis.resumeId._id,
-          filename: analysis.resumeId.filename,
-        },
-        matchPercentage: analysis.analysis.matchPercentage,
-        matchedSkills: analysis.analysis.matchedSkills,
-        missingSkills: analysis.analysis.missingSkills,
-        suggestions: analysis.analysis.suggestions,
-        strengthAreas: analysis.analysis.strengthAreas,
-        improvementAreas: analysis.analysis.improvementAreas,
-        score: analysis.analysis.score,
-        createdAt: analysis.createdAt,
-      },
-*/}
         {/* Analysis Results */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {/* Matched Skills */}
           <div className="bg-white rounded-lg p-6 shadow-sm">
             <div className="flex items-center gap-2 mb-4">
-              <CheckCircle className="w-5 h-5 text-green-600" />
               <h2 className="text-lg font-semibold text-gray-900">Matched Skills</h2>
             </div>
             {analysis?.matchedSkills?.length > 0 ? (
@@ -166,7 +145,6 @@ analysis: {
           {/* Missing Skills */}
           <div className="bg-white rounded-lg p-6 shadow-sm">
             <div className="flex items-center gap-2 mb-4">
-              <XCircle className="w-5 h-5 text-red-600" />
               <h2 className="text-lg font-semibold text-gray-900">Missing Skills</h2>
             </div>
             {analysis?.missingSkills?.length > 0 ? (
@@ -187,7 +165,6 @@ analysis: {
         {/* Suggestions */}
         <div className="bg-white rounded-lg p-6 shadow-sm mb-8">
           <div className="flex items-center gap-2 mb-4">
-            <TrendingUp className="w-5 h-5 text-blue-600" />
             <h2 className="text-lg font-semibold text-gray-900">Improvement Suggestions</h2>
           </div>
           {analysis?.suggestions?.length > 0 ? (
@@ -213,7 +190,6 @@ analysis: {
           {/* Strength Areas */}
           <div className="bg-white rounded-lg p-6 shadow-sm">
             <div className="flex items-center gap-2 mb-4">
-              <CheckCircle className="w-5 h-5 text-green-600" />
               <h2 className="text-lg font-semibold text-gray-900">Strength Areas</h2>
             </div>
             {analysis?.strengthAreas?.length > 0 ? (
@@ -233,7 +209,6 @@ analysis: {
           {/* Improvement Areas */}
           <div className="bg-white rounded-lg p-6 shadow-sm">
             <div className="flex items-center gap-2 mb-4">
-              <AlertTriangle className="w-5 h-5 text-orange-600" />
               <h2 className="text-lg font-semibold text-gray-900">Areas for Improvement</h2>
             </div>
             {analysis?.improvementAreas?.length > 0 ? (

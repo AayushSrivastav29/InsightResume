@@ -1,12 +1,11 @@
 const experiencePatterns = [
-  // ------------ JOB TITLES (common with seniority / specialization) ------------
-  // e.g. "Senior Software Engineer", "Lead Data Scientist", "Junior Frontend Developer"
+  
+  // e.g. "Senior , "Lead , "Junior"
   /\b(?:Senior|Staff|Lead|Principal|Junior|Jr\.?|Associate|Head|VP|Director|Chief|Intern)\b[\s\-:,]*\b(?:Software Engineer|Software Developer|Developer|Engineer|Data Scientist|Data Engineer|Data Analyst|Product Manager|Project Manager|Program Manager|Business Analyst|QA Engineer|Quality Assurance Engineer|SDET|Test Engineer|UX Designer|UI Designer|Graphic Designer|System Administrator|DevOps Engineer|SRE|Site Reliability Engineer|Network Engineer|Database Administrator|DBA|Security Engineer|Cloud Engineer|Full[- ]Stack Developer|Frontend Developer|Backend Developer|Mobile Developer|iOS Developer|Android Developer|Firmware Engineer|Embedded Engineer|Research Assistant|Teaching Assistant|Consultant|Designer|Architect|Analyst)\b[^\n]*/gi,
 
-  // titles without explicit seniority (role line)
+  // titles without seniority 
   /\b(?:Software Engineer|Software Developer|Developer|Engineer|Data Scientist|Data Analyst|Product Manager|Project Manager|Business Analyst|QA Engineer|DevOps Engineer|Designer|Architect|Consultant|Analyst|Administrator|Intern|Volunteer)\b[^\n]*/gi,
 
-  // ------------ DATE RANGES (month name + year formats) ------------
   // e.g. "January 2018 - Present", "Jan 2018 – Apr 2020"
   /\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{4}\s*[–—-]\s*(?:Present|Current|Now|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{4})/gi,
 

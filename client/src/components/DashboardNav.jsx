@@ -78,7 +78,6 @@ export default function DashboardNav() {
                       : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
                   }`}
                 >
-                  <item.icon className="w-4 h-4 mr-2" />
                   {item.name}
                 </button>
               ))}
@@ -99,7 +98,6 @@ export default function DashboardNav() {
               onClick={handleLogout}
               className="flex items-center text-gray-700 hover:text-red-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
             >
-              <LogOut className="w-4 h-4 mr-2" />
               Logout
             </button>
           </div>

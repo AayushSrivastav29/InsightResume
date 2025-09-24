@@ -1,17 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import {
-  Upload,
-  FileText,
-  BarChart3,
-  History,
-  Plus,
-  Search,
-  ChevronRight,
-  Calendar,
-  Download,
-  Trash2,
-  Eye,
-} from "lucide-react";
+import { FileText, BarChart3, Plus, Trash2 } from "lucide-react";
 import { UserContext } from "../UserContext";
 import { useNavigate } from "react-router-dom";
 import DashboardNav from "../components/DashboardNav";
@@ -96,8 +84,12 @@ export default function DashboardPage() {
     }
   };
 
-  const handleAnalysisClick = (analysisId) => {
-    navigate(`/view-analysis/${analysisId}`);
+  const handleAnalysisClick = (analysisId, resumeId) => {
+    if (analysisId) {
+      navigate(`/view-analysis/${analysisId}`);
+    } else {
+      navigate(`/view-resume/${resumeId}`);
+    }
   };
 
   const formatDate = (dateString) => {
@@ -142,9 +134,6 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
             <div className="flex items-center">
-              <div className="p-3 bg-blue-100 rounded-lg">
-                <FileText className="w-6 h-6 text-blue-600" />
-              </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">
                   Total Resumes
@@ -158,9 +147,6 @@ export default function DashboardPage() {
 
           <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
             <div className="flex items-center">
-              <div className="p-3 bg-green-100 rounded-lg">
-                <BarChart3 className="w-6 h-6 text-green-600" />
-              </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">
                   Analyses Done
@@ -174,9 +160,6 @@ export default function DashboardPage() {
 
           <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
             <div className="flex items-center">
-              <div className="p-3 bg-purple-100 rounded-lg">
-                <Search className="w-6 h-6 text-purple-600" />
-              </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">
                   Average Score
@@ -190,14 +173,11 @@ export default function DashboardPage() {
 
           <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
             <div className="flex items-center">
-              <div className="p-3 bg-orange-100 rounded-lg">
-                <Calendar className="w-6 h-6 text-orange-600" />
-              </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">
                   Last Analysis
                 </p>
-                <p className="text-sm font-bold text-gray-900">
+                <p className="text-xl font-bold text-gray-900">
                   {stats.lastAnalysis
                     ? formatDate(stats.lastAnalysis.createdAt)
                     : "None yet"}
@@ -241,13 +221,11 @@ export default function DashboardPage() {
                         console.log("resume :>> ", resume),
                         (
                           <div
-                            key={resume._id}
-                            className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                            key={resume.id}
+                            onClick={() => handleAnalysisClick(null,resume.id)}
+                            className="flex items-center justify-between p-4 bg-gray-50 rounded-lg cursor-pointer"
                           >
                             <div className="flex items-center">
-                              <div className="p-2 bg-blue-100 rounded-lg mr-4">
-                                <FileText className="w-5 h-5 text-blue-600" />
-                              </div>
                               <div>
                                 <h3 className="font-medium text-gray-900">
                                   {resume.filename}
@@ -258,9 +236,6 @@ export default function DashboardPage() {
                               </div>
                             </div>
                             <div className="flex items-center space-x-2">
-                              {/* <button className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors">
-                          <Eye className="w-4 h-4" />
-                        </button> */}
                               <button
                                 onClick={() => handleDeleteResume(resume.id)}
                                 className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
@@ -302,22 +277,14 @@ export default function DashboardPage() {
                     {analyses.map((analysis) => (
                       <div
                         key={analysis._id}
-                        onClick={() => handleAnalysisClick(analysis._id)}
+                        onClick={() => handleAnalysisClick(analysis._id,null)}
                         className="p-4 bg-gray-50 rounded-lg cursor-pointer"
                       >
                         <div className="flex items-center justify-between mb-2">
                           <h3 className="font-medium text-gray-900 truncate">
                             {analysis.jobTitle}
                           </h3>
-                          <span
-                            className={`px-3 py-1 rounded-full text-sm font-medium ${
-                              analysis.analysis?.matchPercentage >= 80
-                                ? "bg-green-100 text-green-800"
-                                : analysis.analysis?.matchPercentage >= 60
-                                ? "bg-yellow-100 text-yellow-800"
-                                : "bg-red-100 text-red-800"
-                            }`}
-                          >
+                          <span className="px-3 py-1 rounded-full text-medium font-medium">
                             {analysis.analysis?.matchPercentage || 0}%
                           </span>
                         </div>
